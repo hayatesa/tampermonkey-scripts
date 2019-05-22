@@ -56,7 +56,8 @@
         
 
         $('#rmj-batch-btn').click(()=>{
-            console.log(bookList);
+            const selectedBooks = bookList.filter(b => b.selected);
+            console.log(selectedBooks);
         });
 
     }
@@ -126,7 +127,7 @@
                     filesize = filesize.substring(0, filesize.indexOf('M'))
 
                     bookListOfMobi.push({
-                        id: $(td).next().find('input').val(),
+                        id: `${MOBI}-${$(td).next().find('input').val()}`,
                         filename: `${bookName}-${$(td).find('b').text().substring(2)}.${MOBI}`,
                         size: +filesize,
                         lnk: $(td).next().find('a').attr('href'),
@@ -137,7 +138,7 @@
                     });
 
                     $(td).next().find('input').change(function() {
-                        checkOne($(this).val(), $(this).prop('checked'));
+                        checkOne(`${MOBI}-${$(this).val()}`, $(this).prop('checked'));
                     });
                 }
 
@@ -173,7 +174,7 @@
                     filesize = filesize.substring(0, filesize.indexOf('M'))
 
                     bookListOfEpub.push({
-                        id: $(td).next().find('input').val(),
+                        id: `${EPUB}-${$(td).next().find('input').val()}`,
                         filename: `${bookName}-${$(td).find('b').text().substring(2)}.${EPUB}`,
                         size: +filesize,
                         lnk: $(td).next().find('a').attr('href'),
@@ -184,7 +185,7 @@
                     });
 
                     $(td).next().find('input').change(function() {
-                        checkOne($(this).val(), $(this).attr('checked') === true);
+                        checkOne(`${EPUB}-${$(this).val()}`, $(this).attr('checked') === true);
                     });
                 }
 

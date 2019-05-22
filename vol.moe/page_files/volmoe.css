@@ -1,0 +1,92 @@
+html {overflow-y:scroll;}
+body {margin:0;padding:0 0 12px 0;font-size:14px;line-height:20px;background:#fff;text-align:center;font-family:Helvetica, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;}
+a {color:#0000DF;text-decoration:none;}
+a:hover {color:#000000;text-decoration:none;}
+a.lcblue {color:#000000;}.lchot,a.lchot {color:#000000;}.black,a.black {color:#000;}
+
+/*body {
+background-color: #76923c;
+background-image: linear-gradient(to bottom, #fff, #fff); 
+} */
+
+.hr_6,.hr_10 {font-size:6px;line-height:6px;clear:both;}.hr_6 {height:8px;}.hr_10 {height:12px;}
+.nav_line {width:100%;height:1px; margin:0 auto;padding:0;background:url(/img/bg-line.png) top left repeat-x}
+.select_line {width:150px; height:3px; margin:0 auto;padding:0;background:url(/img/bg-line3.png) top left repeat-x}
+.select_none {width:150px; height:3px; margin:0 auto;padding:0;}
+.red_point   {background:url(/img/bg-redpoint.png) top left no-repeat;}
+.green_point {background:url(/img/bg-greenpoint.png) top left no-repeat;}
+
+
+.page_nav{width:980px;height:40px; margin:0 auto;text-align:center;padding-left:10px;padding-right:10px;
+          background:url(/img/nav_banner_01.png) top left no-repeat;}
+.page_nav #nav_search{width:380px;text-align:center;}
+.page_nav #nav_user  {width:300px;text-align:right;vertical-align:middle}
+.page_nav #nav_left  {width:900px;text-align:left;vertical-align:middle}
+.page_nav #left-nav{width:410px;text-align:left;}
+.page_nav #user-nav{width:300px;text-align:right;vertical-align:middle}
+
+
+.expo_nav{width:980px;height:40px; margin:0 auto;text-align:center;padding-left:10px;padding-right:10px;}
+.expo_nav div{float:left;padding-top:5px;padding-left:0px; font-size:14px;line-height:30px;vertical-align:bottom}
+.expo_nav .b{margin-right:3px; font-weight:bold;}
+.expo_nav #nav_search{width:380px;text-align:center;}
+.expo_nav #nav_user  {width:300px;text-align:right;vertical-align:middle}
+.expo_nav #nav_left  {width:900px;text-align:left;vertical-align:middle}
+.nav_logo {width:280px;height:30px;margin:0;padding:0; text-align:left;}
+.nav_logo #sitelogo{width:120px;height:30px;}
+.nav_logo #logo_volmoeio{width:150px;height:30px;}
+.nav_logo a{margin:0;padding:0;}
+
+.expo_nav #left-nav{width:410px;text-align:left;}
+.expo_nav #user-nav{width:300px;text-align:right;vertical-align:middle}
+
+#page_foot {width:100%;height:28px; margin:0 auto;padding:0;font-size:12px;
+            background:url(/img/bg-foot.png) top left no-repeat;}
+#page_foot div{color:#666;line-height:20px;}
+#page_foot a {color:#666;text-decoration:none;}
+#page_foot a:hover {color:#666;text-decoration:underline;}
+#page_foot a.lcblue {color:#666;}.lchot,a.lchot {color:#666;}.black,a.black {color:#666;}
+.pagefoot{text-align:center;font-size:12px;}
+
+
+.book_list{width:1000px; margin:0 auto;padding:10}
+.book_list a:hover {text-decoration:none;}
+.listbg1 {font-size:14px;height:26px;text-align:center;padding-left:48px; margin:9px;background-color:#F9F0F9; }
+.listbg2 {font-size:14px;height:26px;text-align:center;padding-left:48px; margin:9px;background-color:#F9F9F0; }
+.listbg0 {background-color:#FFFFFF; }
+.listtitle {font-size:14px;height:36px;text-align:left;padding-left:24px; margin:9px; }
+.img_book {width:112px;height:160px}
+.comm_t{font-size:13px;height:26px;text-align:left;padding-left:48px; margin:9px;background-color:#F9F9F0; }
+.comm_c{font-size:13px;height:26px;text-align:left;padding-left:48px; margin:9px;}
+.mycomm_t{font-size:14px;height:26px;text-align:left;padding-left:48px; margin:9px;background-color:#F9F9F0; }
+.mycomm_c{font-size:14px;height:26px;text-align:left;padding-left:48px; margin:9px;}
+
+.bookinfo {width:980px;height:190px; margin:0 auto;text-align:center;padding-left:10px;}
+.bookinfo div{float:left;padding-top:7px;padding-left:30px; font-size:17px;line-height:27px;vertical-align:bottom}
+.bookinfo #img_book {width:112px;height:160px}
+.bookinfo #author {width:530px;height:160px;text-align:left;color:#000080;}
+.bookinfo #status {color:#8f8f8f;font-size:15px}
+.bookinfo #book_score {width:170px;height:160px;}
+
+.book_desc {width:980px;margin:0 auto;text-align:center;}
+.book_desc div{float:left;padding-top:7px;padding-left:10px; font-size:14px;line-height:24px;vertical-align:bottom}
+.book_desc #desc_text{width:960px;text-align:left;word-wrap:break-word;word-break:break-all;}
+.filesize {font-size:12px;color:#8f8f8f;}
+.scorestar{font-size:12px;color:#8f8f8f;}
+.hd_logo  {font-size:12px;color:#ff3333;}
+
+
+.upload_form {width:980px;margin:0 auto;text-align:center;}
+
+.book_nav{width:90%; margin:0 auto; font-size:14px;text-align:left;}
+.book_nav div{ float:left;padding-top:7px; font-size:24px;line-height:30px;}
+.book_nav .b{margin-right:3px; font-weight:bold;}
+.book_nav .context{margin:0 auto;}
+.book_logo{padding:5px 5px 0 0; text-align:left;}
+#book-intro {font-size:20px; line-height:26px}
+
+.book_view{ margin:0 auto;text-align:center; }
+.book_view div{ float:center; line-height:22px;}
+.book_pic{padding:2px 0 0 0; text-align:center;}
+/* .book_pic #book-view-pic{height:1200px} */
+

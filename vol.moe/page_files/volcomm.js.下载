@@ -1,0 +1,63 @@
+// vim: set expandtab tabstop=4 shiftwidth=4 fdm=marker:
+// +----------------------------------------------------------------------+
+// | volmoe.com                                                           |
+// +----------------------------------------------------------------------+
+// | Copyright (c) 2016-2017 volmoe.com, All Rights Reserved.             |
+// +----------------------------------------------------------------------+
+// | Authors: volmoe.com                                                  |
+// |          fishchen<fishchen@volume.hk>                                |
+// +----------------------------------------------------------------------+
+// $Id$
+
+/**
+ * @version $Revision$
+ * @author  $Author: fishchen $
+ * @date    $Date$
+ * @brief   javascript.
+ */
+
+    function tips_info( msg )
+    {
+        document.getElementById("action_msg").innerHTML  = "<font color=red>" + msg.replace(/\n/g, "<br />") + "</font>";
+        return( false );
+    }
+    function alert_info( msg )
+    {
+        alert( msg );
+        return( false );
+    }
+
+    function tips_alert_info( msg )
+    {
+        document.getElementById("action_msg").innerHTML  = "<font color=red>" + msg.replace(/\n/g, "<br />") + "</font>";
+        alert( msg );
+        return( false );
+    }
+
+    function display_codeinfo( code, type )
+    {
+        var msg = "";
+        if ( eval("arr_codeinfo."+code) != undefined ) {
+            msg = eval( "arr_codeinfo."+code );
+        } else {
+            msg = "System Error: "+code;
+        } // if
+
+        if ( msg == "do_callback" ) {
+            do_callback();
+        } else if ( msg == "do_callback1" ) {
+            do_callback1();
+        } else if ( msg == "do_callback2" ) {
+            do_callback2();
+        } else if ( msg == "do_callback3" ) {
+            do_callback3();
+        } else {
+            if ( type == 1 ) {
+                tips_info( msg );
+            } else if ( type == 2 ) {
+                alert_info( msg );
+            } else {
+                tips_alert_info( msg );
+            } // if
+        } // if
+    }

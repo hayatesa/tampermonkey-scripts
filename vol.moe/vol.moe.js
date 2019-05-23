@@ -4,16 +4,33 @@
 // @version      0.1
 // @description  try to take over the world!
 // @author       You
-// @match        https://vol.moe/comic/*.htm
+// @match        http*://vol.moe/comic/*.htm
 // @grant        none
 // @require      https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js
 // @require      https://cdn.bootcss.com/axios/0.18.0/axios.min.js
 // @require      https://cdn.bootcss.com/jszip/3.2.0/jszip.min.js
 // @require      https://cdn.bootcss.com/jszip-utils/0.0.2/jszip-utils.min.js
+// @require      http://pstatic.xunlei.com/js/webThunderDetect.js
+// @require      http://pstatic.xunlei.com/js/base64.js
+// @require      http://pstatic.xunlei.com/js/thunderBatch.js
 // ==/UserScript==
 
 (function() {
     'use strict';
+    axios.interceptors.request.use(function (config) {
+        console.log(config);
+        return config;
+      }, function (error) {
+        return Promise.reject(error);
+      });
+    // Add a response interceptor
+    axios.interceptors.response.use(function (response) {
+        return response;
+    }, function (error) {
+        console.log(error.response)
+        return Promise.reject(error);
+    });
+
 
     render();
     /*
@@ -37,9 +54,15 @@
         $(ctrl).css('width', '100px');
         $(ctrl).append(`
             <tr>
-                <td colspan="6" align="right"><a id="rmj-batch-btn" href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary" id="follow_button_yes" style="">
-                    批量下载 ( 共 <span id="total-num">0</span> 本 / 约 <span id="total-size">0</span> M )
-                </a></td>
+                <td colspan="6" align="right">
+                    <span>共 <span id="total-num">0</span> 本 / 约 <span id="total-size">0</span> M </span>
+                    <a id="rmj-batch-thunder-btn" href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary" style="background: #3385ff;">
+                        批量下载（迅雷）
+                    </a>
+                    <a id="rmj-batch-btn" href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary" style="background: #3385ff;">
+                        批量下载
+                    </a>
+                </td>
             </tr>
         `)
 
@@ -54,12 +77,119 @@
             current = EPUB;
         })
         
-
-        $('#rmj-batch-btn').click(()=>{
-            const selectedBooks = bookList.filter(b => b.selected);
-            console.log(selectedBooks);
+        $('#rmj-batch-thunder-btn').click(()=>{
+            thunderBatchDownload(bookList.filter(b=>b.selected))
         });
 
+        $('#rmj-batch-btn').click(()=>{
+            downZip(bookList.filter(b=>b.selected))
+        });
+
+    }
+
+    function thunderBatchDownload(books) {
+        BatchTasker.BeginBatch(4, '12345');    //开始批量添加
+    	books.forEach(b=>{
+            BatchTasker.AddTask(ThunderEncode(b.lnk), b.fileName)
+
+            getFileLink(b.lnk)
+        })
+    	BatchTasker.EndBatch('12345');    //结束添加，开始下载
+    }
+
+    //初始化迅雷插件
+	function InitialActiveXObject() {
+		var Thunder;
+		try {
+			Thunder = new ActiveXObject("ThunderAgent.Agent")
+		} catch (e) {
+			try {
+				Thunder = new ActiveXObject("ThunderServer.webThunder.1");
+			} catch (e) {
+				try {
+					Thunder = new ActiveXObject("ThunderAgent.Agent.1");
+				} catch (e) {
+					Thunder = null;
+				}
+			}
+		}
+		return Thunder;
+    }
+    
+    //开始下载
+	function Download(url) {
+		var Thunder = InitialActiveXObject();
+		if (Thunder == null) {
+			DownloadDefault(url);
+			return;
+		}
+		try {
+			Thunder.AddTask(url, "", "", "", "", 1, 1, 10);
+			Thunder.CommitTasks();
+		} catch (e) {
+			try {
+				Thunder.CallAddTask(url, "", "", 1, "", "");
+			} catch (e) {
+				DownloadDefault(url);
+			}
+        }
+    }
+
+    //容错函数，打开默认浏览器下载
+	function DownloadDefault(url) {
+		//alert('打开浏览器下载.......');
+	}
+
+    const getFile = url => {
+        return new Promise((resolve, reject) => {
+            axios({
+                method:'get',
+                url,
+                responseType: 'arraybuffer'
+            }).then(data => {
+                resolve(data.data)
+            }).catch(error => {
+                reject(error.toString())
+            })
+        })
+    }
+
+    const getFileLink = url => {
+        return new Promise((resolve, reject) => {
+            axios({
+                method:'get',
+                url,
+                responseType: '*/*'
+            }).then(data => {
+                resolve(data.resonse)
+            }).catch(error => {
+                reject(error)
+            })
+        })
+    }
+
+
+    function downZip(books){ 
+        handleBatchDownload(books);
+   }
+
+    function handleBatchDownload(books) {
+        const zip = new JSZip();
+        const cache = {};
+        const promises = [];
+        books.forEach(item => {
+            const promise = getFile(item.lnk).then(data => { // 下载文件, 并存成ArrayBuffer对象
+                const fileName = b.fileName
+                zip.file(fileName, data, { binary: true }) // 逐个添加文件 
+                cache[fileName] = data
+            })
+            promises.push(promise)
+        })
+        Promise.all(promises).then(() => {
+            zip.generateAsync({type:"blob"}).then(content => { // 生成二进制流
+                saveAs(content, ""+ bookName +".zip") // 利用file-saver保存文件
+            })
+        })
     }
 
     function getBookName() {
@@ -128,7 +258,7 @@
 
                     bookListOfMobi.push({
                         id: `${MOBI}-${$(td).next().find('input').val()}`,
-                        filename: `${bookName}-${$(td).find('b').text().substring(2)}.${MOBI}`,
+                        filename: `${bookName}-${$(td).find('b').text().substring(2)}.${MOBI}`.replace(' ', ''),
                         size: +filesize,
                         lnk: $(td).next().find('a').attr('href'),
                         date: $(td).find('b').attr('title'),
@@ -175,7 +305,7 @@
 
                     bookListOfEpub.push({
                         id: `${EPUB}-${$(td).next().find('input').val()}`,
-                        filename: `${bookName}-${$(td).find('b').text().substring(2)}.${EPUB}`,
+                        filename: `${bookName}-${$(td).find('b').text().substring(2)}.${EPUB}`.replace(' ', ''),
                         size: +filesize,
                         lnk: $(td).next().find('a').attr('href'),
                         date: $(td).find('b').attr('title'),

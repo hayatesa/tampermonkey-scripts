@@ -10,15 +10,32 @@
 // @require      https://cdn.bootcss.com/axios/0.18.0/axios.min.js
 // @require      https://cdn.bootcss.com/jszip/3.2.0/jszip.min.js
 // @require      https://cdn.bootcss.com/jszip-utils/0.0.2/jszip-utils.min.js
+// @require      http://stuk.github.io/jszip/vendor/FileSaver.js
 // @require      http://pstatic.xunlei.com/js/webThunderDetect.js
 // @require      http://pstatic.xunlei.com/js/base64.js
 // @require      http://pstatic.xunlei.com/js/thunderBatch.js
+// @require      https://raw.githubusercontent.com/wendux/fly/master/dist/fly.min.js
+// @require      https://raw.githubusercontent.com/wendux/Ajax-hook/master/dist/ajaxhook.min.js
 // ==/UserScript==
 
 (function() {
     'use strict';
+
+    // hookAjax({
+    //     //拦截回调
+    //     onreadystatechange:function(xhr){
+    //       console.log("onreadystatechange called: %O",xhr)
+    //       console.log(xhr.xhr.responseXML)
+    //     },
+    //     onload: function(xhr){
+    //       console.log("onload called: %O",xhr)
+    //     },
+    //     //拦截方法
+    //     open:function(arg,xhr){
+    //       console.log("open called: method:%s,url:%s,async:%s",arg[0],arg[1],arg[2])
+    //     }
+    // })
     axios.interceptors.request.use(function (config) {
-        console.log(config);
         return config;
       }, function (error) {
         return Promise.reject(error);
@@ -27,9 +44,49 @@
     axios.interceptors.response.use(function (response) {
         return response;
     }, function (error) {
-        console.log(error.response)
         return Promise.reject(error);
     });
+
+    if (console) {
+        const _console = {
+            log: console.log,
+            info: console.info,
+            debug: console.debug,
+            warn: console.warn,
+            error: console.error,
+            trace: console.trace,
+            group: console.group,
+        };
+        // console.log = function(data) {
+        //     alert('reLog:' +  data)
+        //     _console.log.apply(this, Array.prototype.slice.call(arguments, 0));
+        // };
+        // console.info = function(data) {
+        //     alert('reInfo:' +  data)
+        //     _console.info.apply(this, Array.prototype.slice.call(arguments, 0));
+        // };
+        // console.debug = function(data) {
+        //     alert('reDebug:' +  data)
+        //     _console.debug.apply(this, Array.prototype.slice.call(arguments, 0));
+        // };
+        // console.warn = function(a) {
+        //     alert('reWarn:' +  data)
+        //     _console.warn.apply(this, Array.prototype.slice.call(arguments, 0));
+        // };
+        // console.error = function(a) {
+        //     alert('reError:' +  data)
+        //     _console.error.apply(this, Array.prototype.slice.call(arguments, 0));
+        // };
+        // console.group = function(a) {
+        //     alert('reGroup:' +  data)
+        //     _console.group.apply(this, Array.prototype.slice.call(arguments, 0));
+        // };
+        // console.trace = function(a) {
+        //     alert('reTrace:' +  data)
+        //     _console.trace.apply(this, Array.prototype.slice.call(arguments, 0));
+        // };
+    }
+
 
 
     render();
@@ -55,12 +112,15 @@
         $(ctrl).append(`
             <tr>
                 <td colspan="6" align="right">
-                    <span>共 <span id="total-num">0</span> 本 / 约 <span id="total-size">0</span> M </span>
+                    <span style="margin-top: 15px;font-size: 12px;color: #8f8f8f">共 <span id="total-num">0</span> 本 / 约 <span id="total-size">0</span> M </span>
                     <a id="rmj-batch-thunder-btn" href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary" style="background: #3385ff;">
                         批量下载（迅雷）
                     </a>
+                    <a id="rmj-batch-zip-btn" href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary" style="background: #3385ff;">
+                        批量下载（zip）
+                    </a>
                     <a id="rmj-batch-btn" href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary" style="background: #3385ff;">
-                        批量下载
+                        批量下载（浏览器）
                     </a>
                 </td>
             </tr>
@@ -81,8 +141,20 @@
             thunderBatchDownload(bookList.filter(b=>b.selected))
         });
 
-        $('#rmj-batch-btn').click(()=>{
+        $('#rmj-batch-zip-btn').click(()=>{
             downZip(bookList.filter(b=>b.selected))
+        });
+
+        $('#rmj-batch-btn').click(()=>{
+            let i = 0;
+            let selecteds = bookList.filter(b=>b.selected)
+            window.open(selecteds[i++].lnk, '_target')
+            const it = setInterval(()=>{
+                window.open(selecteds[i++].lnk, '_target')
+                if (i === selecteds.length) {
+                    clearInterval(it)
+                }
+            }, 3000)
         });
 
     }
@@ -149,7 +221,7 @@
             }).then(data => {
                 resolve(data.data)
             }).catch(error => {
-                reject(error.toString())
+                reject(error)
             })
         })
     }
